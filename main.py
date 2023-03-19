@@ -6,17 +6,17 @@ app = Flask(__name__)
 tasks = [
     {
         'id': 1,
-        'task': 'do homework',
+        'task': 'do chem tutorial',
         'completed': False
     },
     {
         'id': 2,
-        'task': 'Do laundry',
+        'task': 'Do math homework',
         'completed': False
     },
     {
         'id': 3,
-        'task': 'Clean the house',
+        'task': 'watch econs lecture',
         'completed': False
     }
 ]
@@ -44,13 +44,15 @@ def complete_task(task_id):
         if task['id'] == task_id:
             task['completed'] = True
     return redirect(url_for('home'))
-  # route to handle deleting a task
+
+# route to handle deleting a task
 @app.route('/delete_task/<int:task_id>', methods=['POST'])
 def delete_task(task_id):
     global tasks
     tasks = [task for task in tasks if task['id'] != task_id]
     return redirect(url_for('home'))
-  # route to handle deleting completed tasks
+
+# route to handle deleting completed tasks
 @app.route('/delete_completed_tasks', methods=['POST'])
 def delete_completed_tasks():
     global tasks
@@ -62,6 +64,12 @@ def study_timer():
     if request.method == 'POST':
         subject = request.form['subject']
         time = request.form['time']
+        
+        # easter egg
+        if subject.lower() == 'tristan':
+            return "<script>alert('hey how did you get here?');</script>"
+    
+  
         return redirect(url_for('timer', subject=subject, time=time))
     return render_template('study_timer.html')
 
@@ -69,12 +77,19 @@ def study_timer():
 def timer(subject, time):
     return render_template('timer.html', subject=subject, time=time)
 
+@app.route('/good_study_methods')
+def good_study_methods():
+    return render_template('good_study_methods.html')
 
-
-
-
-
-
+@app.route('/submit_suggestion', methods=['POST'])
+def submit_suggestion():
+    helpful = request.form['helpful']
+    suggestion = request.form['suggestion']
+    
+    with open('suggestions.txt', 'a') as f:
+        f.write(f'{helpful}: {suggestion}\n')
+    
+    return "thank you for your suggestion!"
 
 
 if __name__ == '__main__':
@@ -90,3 +105,5 @@ if __name__ == '__main__':
 
 
 app.run(host='0.0.0.0', port=81)
+
+
