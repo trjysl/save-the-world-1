@@ -2,77 +2,60 @@
 <html>
 <head>
     <title>Study Timer</title>
+     <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='logo2.png') }}">  
     <style>
         body {
             font-size: 24px;
+            padding-top: 50px;
         }
         h1 {
             font-size: 48px;
         }
-        p {
+        label {
             font-size: 36px;
         }
-        #timer {
-            font-size: 72px;
-        }
-        #times-up {
-            display: none;
-            font-size: 72px;
-        }
-        ul {
+        input[type="text"], input[type="number"] {
             font-size: 24px;
+            padding: 10px;
+            margin-bottom: 20px;
         }
+        input[type="submit"] {
+            font-size: 24px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+        }
+        a {
+            font-size: 24px;
+            margin-top: 20px;
+            display: inline-block;
+        }
+      a.back-home {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f2f2f2; /* Grey */
+  color: black; /* Black */
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 24px;
+  margin-top: 20px;
+}
+a.back-home:hover {
+  background-color: #ddd; /* Light grey */
+}
+
     </style>
 </head>
-<body style="background-image: url('/static/quote5.jpg');">
-    <h1>Study Timer <span>&#x1F550;</span></h1>
-    <p>Subject: {{ subject }}</p>
-    <p>Time: {{ time }} minutes</p>
+<body background="static/background2.png">
+    <h1>Study Timer</h1>
+    <form method="POST" action="{{ url_for('study_timer') }}">
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" placeholder="Enter subject"><br>
+        <label for="time">Study Time (in minutes):</label>
+        <input type="number" id="time" name="time" placeholder="Enter time in minutes"><br>
+        <input type="submit" value="Start Timer">
+    </form>
+    <a href="/" class="back-home">back to home</a>
 
-    <audio id="alarm-sound" src="/static/alarm.wav"></audio> <!-- add audio element with source to alarm sound file -->
-
-   <script>
-    var alarmSound = document.getElementById("alarm-sound");
-    
-    function startTimer(duration) {
-        var timer = duration, minutes, seconds;
-        var timesUpText = document.getElementById("times-up");
-        
-        setInterval(function () {
-            minutes = parseInt(timer / 60, 10);
-            seconds = parseInt(timer % 60, 10);
-
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
-
-            document.getElementById("timer").innerHTML = minutes + ":" + seconds;
-
-            if (--timer < 0) {
-                clearInterval(timerInterval);
-                timesUpText.style.display = "block";
-                alarmSound.play(); // play alarm sound
-            }
-        }, 1000);
-        
-        var timerInterval = setInterval(function() {
-            if (timer == 0) clearInterval(timerInterval);
-            timer--;
-        }, 60000);
-    }
-
-    window.onload = function () {
-        var time = {{ time }} * 60;
-        startTimer(time);
-    };
-</script>
-
-
-    <p>Time left: <span id="timer"></span></p>
-    <p id="times-up">Time's Up!</p>
-    <ul>
-        <li><a href="/study_timer">previous page</a></li>
-        <li><a href="/">back to home</a></li>
-    </ul>
-    
 </body>
 </html>
+
