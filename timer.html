@@ -2,60 +2,74 @@
 <html>
 <head>
     <title>Study Timer</title>
-     <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='logo2.png') }}">  
+     <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='logo2.png') }}">
     <style>
         body {
-            font-size: 24px;
-            padding-top: 50px;
+            background-image: url("/static/quote5.jpg");
+            background-size: cover;
         }
+        
         h1 {
-            font-size: 48px;
+            font-size: 4em;
+            padding: 1em;
         }
-        label {
-            font-size: 36px;
+        
+        p {
+            font-size: 2em;
+            padding: 1em;
         }
-        input[type="text"], input[type="number"] {
-            font-size: 24px;
-            padding: 10px;
-            margin-bottom: 20px;
+        
+        #timer {
+            font-size: 3em;
+            padding: 1em;
         }
-        input[type="submit"] {
-            font-size: 24px;
-            padding: 10px 20px;
-            margin-bottom: 20px;
+        
+        .back-home, .previous {
+            font-size: 2em;
+            padding: 0.5em 1em;
+            border-radius: 0.5em;
+            background-color: #555;
+            color: white;
+            text-decoration: none;
         }
-        a {
-            font-size: 24px;
-            margin-top: 20px;
-            display: inline-block;
+        
+        .back-home:hover, .previous:hover {
+            background-color: #333;
         }
-      a.back-home {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #f2f2f2; /* Grey */
-  color: black; /* Black */
-  text-decoration: none;
-  border-radius: 5px;
-  font-size: 24px;
-  margin-top: 20px;
-}
-a.back-home:hover {
-  background-color: #ddd; /* Light grey */
-}
-
+        
+        .back-home:active, .previous:active {
+            background-color: #000;
+        }
     </style>
 </head>
-<body background="static/background2.png">
-    <h1>Study Timer</h1>
-    <form method="POST" action="{{ url_for('study_timer') }}">
-        <label for="subject">Subject:</label>
-        <input type="text" id="subject" name="subject" placeholder="Enter subject"><br>
-        <label for="time">Study Time (in minutes):</label>
-        <input type="number" id="time" name="time" placeholder="Enter time in minutes"><br>
-        <input type="submit" value="Start Timer">
-    </form>
-    <a href="/" class="back-home">back to home</a>
+<body>
+    <h1>Study Timer: {{ subject }}</h1>
+    <p>Time Remaining: <span id="timer"></span></p>
+    <script>
+        var duration = {{ time }} * 60;
+        var display = document.querySelector('#timer');
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
 
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(timer);
+                    display.textContent = "Time's up!";
+                    var audio = new Audio('/static/alarm.wav');
+                    audio.play();
+                }
+            }, 1000);
+        }
+        startTimer(duration, display);
+    </script>
+    <a href="/" class="back-home">Back to Home</a>
+    <a href="/study_timer" class="previous page">Previous Page</a>
 </body>
 </html>
-
