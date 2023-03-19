@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Study Timer</title>
+    <style>
+        body {
+            font-size: 24px;
+        }
+        h1 {
+            font-size: 48px;
+        }
+        p {
+            font-size: 36px;
+        }
+        #timer {
+            font-size: 72px;
+        }
+        #times-up {
+            display: none;
+            font-size: 72px;
+        }
+        ul {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body style="background-image: url('/static/quote5.jpg');">
+    <h1>Study Timer <span>&#x1F550;</span></h1>
+    <p>Subject: {{ subject }}</p>
+    <p>Time: {{ time }} minutes</p>
+
+    <audio id="alarm-sound" src="/static/alarm.wav"></audio> <!-- add audio element with source to alarm sound file -->
+
+   <script>
+    var alarmSound = document.getElementById("alarm-sound");
+    
+    function startTimer(duration) {
+        var timer = duration, minutes, seconds;
+        var timesUpText = document.getElementById("times-up");
+        
+        setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            document.getElementById("timer").innerHTML = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                timesUpText.style.display = "block";
+                alarmSound.play(); // play alarm sound
+            }
+        }, 1000);
+        
+        var timerInterval = setInterval(function() {
+            if (timer == 0) clearInterval(timerInterval);
+            timer--;
+        }, 60000);
+    }
+
+    window.onload = function () {
+        var time = {{ time }} * 60;
+        startTimer(time);
+    };
+</script>
+
+
+    <p>Time left: <span id="timer"></span></p>
+    <p id="times-up">Time's Up!</p>
+    <ul>
+        <li><a href="/study_timer">previous page</a></li>
+        <li><a href="/">back to home</a></li>
+    </ul>
+    
+</body>
+</html>
